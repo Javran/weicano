@@ -3,7 +3,7 @@
 // @namespace   javran.github.io
 // @description Weibo.cn cleaner
 // @include     https://weibo.cn/*
-// @version     1.1
+// @version     1.2
 // @grant       GM_getValue
 // @grant       GM_setValue
 // @require     http://code.jquery.com/jquery-3.2.1.min.js
@@ -36,7 +36,8 @@ const applyFilters = () => {
 }
 
 const mkDialogContent = () => {
-  const dlg = $('#weicano-dialog').dialog(
+  const jqDlg = $('#weicano-dialog')
+  const dlg = jqDlg.dialog(
     {
       autoOpen: false,
       position: {my: 'top', at: 'bottom', of: '#weicano-entry'},
@@ -44,10 +45,10 @@ const mkDialogContent = () => {
   )
 
   const keywords = getKeywords()
-  $('#weicano-dialog').empty()
+  jqDlg.empty()
   keywords.map(([keyword,active], ind) => {
     const kwId = `weicano-kw-toggle-${ind}`
-    $('#weicano-dialog').append(
+    jqDlg.append(
       $(`<div />`).css({
         width: '100%',
         display: 'flex',
@@ -56,75 +57,50 @@ const mkDialogContent = () => {
       ).append(
         $('<input />').prop(
           Object.assign(
-            {
-              type: 'checkbox',
-              name: kwId,
-              id: kwId,
-            },
+            {type: 'checkbox', name: kwId, id: kwId},
             active ? {checked: true} : {}
           )
-        )
+        ).change(() => {
+          keywords[ind][1] = !keywords[ind][1]
+          setKeywords(keywords)
+          applyFilters()
+          mkDialogContent()
+        })
       ).append(
         $('<button />').css({
           padding: 0,
           'font-size': '10px',
-        }).prop({id: `${kwId}-btn`}).text('X')
+        }).text('X').click(() => {
+          const newKeywords = []
+          keywords.map((x, xInd) => ind !== xInd && newKeywords.push(x))
+          setKeywords(newKeywords)
+          applyFilters()
+          mkDialogContent()
+        })
       )
     )
   })
-  $('#weicano-dialog').append(
-    $('<div />').css({
-      width: '100%',
-      display: 'flex',
-    }).append(
-      $('<input />').css({
-        flex: 1,
-      }).prop({
+  jqDlg.append(
+    $('<div />').css({width: '100%', display: 'flex'}).append(
+      $('<input />').css({flex: 1}).prop({
         type: 'text',
         name: 'weicano-new-kw',
         id: 'weicano-new-kw',
       }).addClass('text ui-widget-content ui-corner-all')
     ).append(
-      $('<button />').css({
-        padding: 0,
-        'font-size': '10px',
-      }).prop({id: 'weicano-add-kw'}).text('+')
+      $('<button />').css({padding: 0, 'font-size': '10px'}).text('+').click(() => {
+        const newKeyword = $('#weicano-dialog input#weicano-new-kw').val().trim()
+        if (newKeyword) {
+          $('#weicano-dialog input#weicano-new-kw').val('')
+          setKeyword(newKeyword)
+          applyFilters()
+          mkDialogContent()
+        }
+      })
     )
   )
 
-  $('#weicano-dialog button#weicano-add-kw').click(() => {
-    const newKeyword = $('#weicano-dialog input#weicano-new-kw').val().trim()
-    if (newKeyword) {
-      $('#weicano-dialog input#weicano-new-kw').val('')
-      setKeyword(newKeyword)
-      applyFilters()
-      mkDialogContent()
-    }
-  })
-
-  keywords.map((_kwInfo, ind) => {
-    const kwId = `weicano-kw-toggle-${ind}`
-    $(`#weicano-dialog button#${kwId}-btn`).click(() => {
-      const newKeywords = []
-      keywords.map((x, xInd) => ind !== xInd && newKeywords.push(x))
-      setKeywords(newKeywords)
-      applyFilters()
-      mkDialogContent()
-    })
-
-    $(`#weicano-dialog input#${kwId}`).change(() => {
-      keywords[ind][1] = !keywords[ind][1]
-      setKeywords(keywords)
-      applyFilters()
-      mkDialogContent()
-    })
-  })
-
-  $('#weicano-entry').text(
-    'Weicano'
-  ).click(() =>
-    dlg.dialog('open')
-  )
+  $('#weicano-entry').text('Weicano').click(() => dlg.dialog('open'))
 }
 
 document.documentElement.setAttribute('lang', 'zh-CN')
@@ -142,10 +118,7 @@ $(document).ready(() => {
     jq.hide()
     jq[0].nextSibling.textContent = ''
 
-    jq.parent(
-    ).append(
-      '|'
-    ).append(
+    jq.parent().append('|').append(
       $('<button id="weicano-entry" />')
     ).append(
       $('<div id="weicano-dialog" title="Weicano" />').hide()
