@@ -3,29 +3,15 @@
 // @namespace   javran.github.io
 // @description Weibo.cn cleaner
 // @include     https://weibo.cn/*
-// @version     1
+// @version     1.1
 // @grant       GM_getValue
 // @grant       GM_setValue
 // @require     http://code.jquery.com/jquery-3.2.1.min.js
 // @require     https://code.jquery.com/ui/1.12.1/jquery-ui.min.js
 // @require     https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js
 // ==/UserScript==
-const getKeywords = () =>
-  JSON.parse(GM_getValue('keywords','[]'))
 
-const setKeywords = keywords =>
-  GM_setValue('keywords',JSON.stringify(keywords))
-
-const setKeyword = (keyword, value=true) => {
-  const keywords = getKeywords()
-  const kwInd = keywords.findIndex(([kw]) => kw === keyword)
-  if (kwInd === -1) {
-    keywords.push([keyword,value])
-  } else {
-    keywords[kwInd][1] = value
-  }
-  setKeywords(keywords)
-}
+import { getKeywords, setKeyword, setKeywords } from './gm'
 
 const applyFilters = () => {
   const activeKeywords = _.flatMap(
