@@ -19,7 +19,6 @@ const setKeywords = keywords =>
 const setKeyword = (keyword, value=true) => {
   const keywords = getKeywords()
   const kwInd = keywords.findIndex(([kw]) => kw === keyword)
-  let newKeywords
   if (kwInd === -1) {
     keywords.push([keyword,value])
   } else {
@@ -92,8 +91,7 @@ const mkDialogContent = () => {
     }
   })
 
-  keywords.map((kwInfo, ind) => {
-    const [keyword,active] = kwInfo
+  keywords.map((_kwInfo, ind) => {
     const kwId = `weicano-kw-toggle-${ind}`
     $(`#weicano-dialog button#${kwId}-btn`).click(() => {
       const newKeywords = []
@@ -103,8 +101,7 @@ const mkDialogContent = () => {
       mkDialogContent()
     })
 
-    $(`#weicano-dialog input#${kwId}`).change(e => {
-      const newVal = e.target.checked
+    $(`#weicano-dialog input#${kwId}`).change(() => {
       keywords[ind][1] = !keywords[ind][1]
       setKeywords(keywords)
       applyFilters()

@@ -1,0 +1,27 @@
+{
+  "name": "weicano",
+  "version": "0.0.1",
+  "description": "simple weibo.cn cleanup & filtering",
+  "private": true,
+  "devDependencies": {
+    "babel-eslint": "^7.2.3",
+    "eslint": "^4.4.1",
+    "eslint-plugin-import": "^2.7.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Javran/weicano.git"
+  },
+  "keywords": [
+    "weibo"
+  ],
+  "author": "Javran Cheng <Javran.C@gmail.com> (https://github.com/Javran)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Javran/weicano/issues"
+  },
+  "homepage": "https://github.com/Javran/weicano#readme"
+}
