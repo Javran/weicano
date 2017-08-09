@@ -44,27 +44,52 @@ const mkDialogContent = () => {
   )
 
   const keywords = getKeywords()
-  $('#weicano-dialog').html(
-    [
-      ..._.flatMap(
-        keywords,
-        ([keyword,active], ind) => {
-          const kwId = `weicano-kw-toggle-${ind}`
-          return [
-            '<div style="width: 100%; display: flex">',
-            `<label style="flex: 1" for="${kwId}">${keyword}</label>`,
-            `<input type="checkbox" name="${kwId}" id="${kwId}" ${active ? "checked" : ""}>`,
-            `<button style="padding: 0; font-size: 10px" id="${kwId}-btn">X</button>`,
-            '</div>',
-          ]
-        }),
-      ...[
-        `<div style="width: 100%; display: flex">`,
-        `<input style="flex: 1" type="text" name="weicano-new-kw" id="weicano-new-kw" class="text ui-widget-content ui-corner-all">`,
-        `<button style="padding: 0; font-size: 10px" id="weicano-add-kw">+</button>`,
-        '</div>',
-      ],
-    ].join('')
+  $('#weicano-dialog').empty()
+  keywords.map(([keyword,active], ind) => {
+    const kwId = `weicano-kw-toggle-${ind}`
+    $('#weicano-dialog').append(
+      $(`<div />`).css({
+        width: '100%',
+        display: 'flex',
+      }).append(
+        $('<label />').css({flex: 1}).prop({for: kwId}).text(keyword)
+      ).append(
+        $('<input />').prop(
+          Object.assign(
+            {
+              type: 'checkbox',
+              name: kwId,
+              id: kwId,
+            },
+            active ? {checked: true} : {}
+          )
+        )
+      ).append(
+        $('<button />').css({
+          padding: 0,
+          'font-size': '10px',
+        }).prop({id: `${kwId}-btn`}).text('X')
+      )
+    )
+  })
+  $('#weicano-dialog').append(
+    $('<div />').css({
+      width: '100%',
+      display: 'flex',
+    }).append(
+      $('<input />').css({
+        flex: 1,
+      }).prop({
+        type: 'text',
+        name: 'weicano-new-kw',
+        id: 'weicano-new-kw',
+      }).addClass('text ui-widget-content ui-corner-all')
+    ).append(
+      $('<button />').css({
+        padding: 0,
+        'font-size': '10px',
+      }).prop({id: 'weicano-add-kw'}).text('+')
+    )
   )
 
   $('#weicano-dialog button#weicano-add-kw').click(() => {
@@ -105,7 +130,10 @@ const mkDialogContent = () => {
 document.documentElement.setAttribute('lang', 'zh-CN')
 $(document).ready(() => {
   $('head').append(
-    $('<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">')
+    $('<link/>').prop({
+      rel: 'stylesheet',
+      href: 'https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css',
+    })
   )
   $("a#top:contains('广场')").parent().hide()
 
