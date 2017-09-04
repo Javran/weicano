@@ -126,6 +126,7 @@ $(document).ready(() => {
   }
 
   $("a#top[href='http://m.weibo.cn']").parent().hide()
+  $("div.c.tip a#top.tl:contains(手机微博触屏版)").parent().hide()
   $('div.pm > form span.pmf').hide()
 
   applyFilters()
